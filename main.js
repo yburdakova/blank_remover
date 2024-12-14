@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,7 +12,7 @@ function createMainWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: __dirname + '/preload.js',
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
@@ -24,6 +24,19 @@ function createMainWindow() {
     mainWindow = null;
   });
 }
+
+
+ipcMain.handle('select-folder', async (event, parentPath) => {
+  try {
+    const result = await dialog.showOpenDialog({
+      defaultPath: parentPath || app.getPath('documents'),
+      properties: ['openDirectory'],
+    });
+    return result.filePaths[0] || '';
+  } catch (error) {
+    console.error('Error selecting folder:', error);
+    return '';
+}})
 
 app.on('ready', createMainWindow);
 

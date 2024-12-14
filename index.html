@@ -3,18 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blank Remover</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self';">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Blank Remover</h1>
+
+  <div class="path-container">
+    <label for="parentPath">Parent Folder Path:</label>
+    <input type="text" id="parentPath" value="/default/path/to/scanned/files" disabled>
+    <button id="editPath">Edit</button>
+    <button id="savePath" disabled>Save</button>
+  </div>
+
   <p>Choose a folder to analyze:</p>
   <button id="selectFolder">Select Folder</button>
   <p id="selectedFolder">No folder selected</p>
   <script>
-    document.getElementById('selectFolder').addEventListener('click', async () => {
-      const folderPath = await window.electronAPI.selectFolder();
-      const folderDisplay = document.getElementById('selectedFolder');
+    const editButton = document.getElementById('editPath');
+    const saveButton = document.getElementById('savePath');
+    const pathInput = document.getElementById('parentPath');
+    const folderButton = document.getElementById('selectFolder');
+    const folderDisplay = document.getElementById('selectedFolder');
+
+    editButton.addEventListener('click', () => {
+      pathInput.disabled = false;
+      saveButton.disabled = false;
+      editButton.disabled = true;
+    });
+
+    saveButton.addEventListener('click', () => {
+      pathInput.disabled = true;
+      saveButton.disabled = true;
+      editButton.disabled = false;
+    });
+
+    folderButton.addEventListener('click', async () => {
+      const parentPath = pathInput.value;
+      const folderPath = await window.electronAPI.selectFolder(parentPath);
       folderDisplay.textContent = folderPath || 'No folder selected';
     });
   </script>
