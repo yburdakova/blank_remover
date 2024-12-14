@@ -1,13 +1,14 @@
 {
-  "name": "ccs_blank_remover",
+  "name": "blank_remover",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "main.js",
   "scripts": {
-    "start": "electron",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Yana Burdakova",
   "license": "ISC",
   "description": "",
   "devDependencies": {
