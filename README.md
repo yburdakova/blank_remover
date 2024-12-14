@@ -24,6 +24,10 @@ CCS Blank Remover is a desktop application designed to simplify and automate the
 - **Python**: For image processing and page analysis.
 - **OpenCV**: For blank page detection using image processing techniques.
 
+### **Storage**
+- **electron-store**: For saving user settings locally.
+
+
 ### **Other Tools**
 - **Node.js**: For managing dependencies and application runtime.
 - **npm**: For managing project dependencies.
