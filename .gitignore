@@ -21,3 +21,10 @@ Thumbs.db
 # Ignore IDE specific files
 .vscode/
 .idea/
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Store from 'electron-store';
+import { spawn } from 'child_process';
 
 const store = new Store();
 
@@ -48,6 +49,28 @@ ipcMain.handle('get-folder-path', () => {
 ipcMain.handle('set-folder-path', (event, newPath) => {
   console.log('Saving path:', newPath);
   store.set('parentFolderPath', newPath);
+});
+
+ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
+  return new Promise((resolve, reject) => {
+    const pythonProcess = spawn('python3', [path.join(__dirname, 'remove_blank_pages.py'), folderPath]);
+
+    pythonProcess.stdout.on('data', (data) => {
+      console.log(`Python Output: ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`Python Error: ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code === 0) {
+        resolve('Blank pages removed successfully.');
+      } else {
+        reject(`Python script exited with code ${code}`);
+      }
+    });
+  });
 });
 
 app.on('ready', createMainWindow);

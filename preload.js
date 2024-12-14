@@ -25,4 +25,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
       console.error('Error in setFolderPath:', error);
     }
   },
+  removeBlankPages: async (folderPath) => {
+    try {
+      return await ipcRenderer.invoke('remove-blank-pages', folderPath);
+    } catch (error) {
+      console.error('Error in removeBlankPages:', error);
+      return 'Error removing blank pages.';
+    }
+  },
 });

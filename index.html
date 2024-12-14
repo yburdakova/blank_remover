@@ -70,8 +70,19 @@
       }
     });
 
-    removeButton.addEventListener('click', () => {
-      alert('Removing blank pages...');
+    removeButton.addEventListener('click', async () => {
+      const folderPath = folderDisplay.textContent;
+      if (folderPath === 'No folder selected') {
+        alert('Please select a folder first.');
+        return;
+      }
+
+      try {
+        const result = await window.electronAPI.removeBlankPages(folderPath);
+        alert(result);
+      } catch (error) {
+        alert(`Error: ${error}`);
+      }
     });
   </script>
 </body>
