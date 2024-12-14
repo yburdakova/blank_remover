@@ -28,7 +28,16 @@
     const pathInput = document.getElementById('parentPath');
     const folderButton = document.getElementById('selectFolder');
     const folderDisplay = document.getElementById('selectedFolder');
-    const removeButton = document.getElementById('removePages'); 
+    const removeButton = document.getElementById('removePages');
+
+    (async () => {
+      try {
+        const savedPath = await window.electronAPI.getFolderPath();
+        pathInput.value = savedPath;
+      } catch (error) {
+        console.error('Error loading saved path:', error);
+      }
+    })();
 
     editButton.addEventListener('click', () => {
       pathInput.disabled = false;
@@ -36,7 +45,14 @@
       editButton.disabled = true;
     });
 
-    saveButton.addEventListener('click', () => {
+    saveButton.addEventListener('click', async () => {
+      const newPath = pathInput.value;
+      try {
+        await window.electronAPI.setFolderPath(newPath);
+        console.log(`Saved path: ${newPath}`);
+      } catch (error) {
+        console.error('Error saving path:', error);
+      }
       pathInput.disabled = true;
       saveButton.disabled = true;
       editButton.disabled = false;

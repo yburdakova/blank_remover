@@ -1,6 +1,9 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Store from 'electron-store';
+
+const store = new Store();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +40,15 @@ ipcMain.handle('select-folder', async (event, parentPath) => {
     console.error('Error selecting folder:', error);
     return '';
 }})
+
+ipcMain.handle('get-folder-path', () => {
+  return store.get('parentFolderPath', '/default/path/to/scanned/files');
+});
+
+ipcMain.handle('set-folder-path', (event, newPath) => {
+  console.log('Saving path:', newPath);
+  store.set('parentFolderPath', newPath);
+});
 
 app.on('ready', createMainWindow);
 

@@ -10,4 +10,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return '';
     }
   },
+  getFolderPath: async () => {
+    try {
+      return await ipcRenderer.invoke('get-folder-path');
+    } catch (error) {
+      console.error('Error in getFolderPath:', error);
+      return '/default/path/to/scanned/files';
+    }
+  },
+  setFolderPath: async (newPath) => {
+    try {
+      await ipcRenderer.invoke('set-folder-path', newPath);
+    } catch (error) {
+      console.error('Error in setFolderPath:', error);
+    }
+  },
 });
