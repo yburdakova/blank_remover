@@ -1,5 +1,27 @@
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   display: flex;
@@ -7,49 +29,63 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f4f4f9;
+  background-color: #e0e0e0;
   color: #333;
 }
 
+/* Заголовки */
 h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: #2c3e50;
+  text-align: center;
+  text-shadow: 1px 1px 3px #c5c5c5;
 }
 
 p {
   font-size: 1.1rem;
   margin-bottom: 1rem;
   text-align: center;
+  color: #555;
 }
 
+/* Неоморфические кнопки */
 button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
+  color: #4a4a4a; /* Темно-серый цвет текста */
+  font-weight: bold;
+  padding: 0.7em 1.7em;
   font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 0.5em;
+  background: #e0e0e0;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  flex-shrink: 0;
+  border: none;
+  transition: background-color 0.3s;
+  box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
 }
 
 button:hover {
-  background-color: #2980b9;
-}
-
-#selectedFolder {
-  margin-top: 1rem;
-  font-size: 1rem;
-  color: #7f8c8d;
-  word-wrap: break-word;
-  max-width: 80%;
-  text-align: center;
+  background: #d4d4d4; 
 }
 
 button:active {
-  transform: scale(0.98);
+  color: #4a4a4a;
+  box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  padding: 0.7em;
+  font-size: 1rem;
+  border-radius: 0.5em;
+  border: none;
+  background: #e0e0e0;
+  box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
 }
 
 .path-container {
@@ -57,36 +93,27 @@ button:active {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  background: #e0e0e0;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
 }
 
-input[type="text"] {
-  flex-grow: 1;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#removePages {
+/* Выбранный путь */
+#selectedFolder {
   margin-top: 1rem;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  color: #7f8c8d;
+  word-wrap: break-word;
+  max-width: 80%;
+  text-align: center;
+  box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #e0e0e0;
 }
 
-#removePages:hover {
-  background-color: #c0392b;
-}
-
-#removePages:active {
-  transform: scale(0.98);
-}
-
+/* Скрытые элементы */
 .hidden {
   display: none;
 }
