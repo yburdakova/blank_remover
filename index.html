@@ -19,12 +19,16 @@
   <p>Choose a folder to analyze:</p>
   <button id="selectFolder">Select Folder</button>
   <p id="selectedFolder">No folder selected</p>
+
+  <button id="removePages" class="hidden">Remove Blank Pages</button>
+
   <script>
     const editButton = document.getElementById('editPath');
     const saveButton = document.getElementById('savePath');
     const pathInput = document.getElementById('parentPath');
     const folderButton = document.getElementById('selectFolder');
     const folderDisplay = document.getElementById('selectedFolder');
+    const removeButton = document.getElementById('removePages'); 
 
     editButton.addEventListener('click', () => {
       pathInput.disabled = false;
@@ -42,6 +46,16 @@
       const parentPath = pathInput.value;
       const folderPath = await window.electronAPI.selectFolder(parentPath);
       folderDisplay.textContent = folderPath || 'No folder selected';
+
+      if (folderPath) {
+        removeButton.style.display = 'inline-block';
+      } else {
+        removeButton.style.display = 'none';
+      }
+    });
+
+    removeButton.addEventListener('click', () => {
+      alert('Removing blank pages...');
     });
   </script>
 </body>
