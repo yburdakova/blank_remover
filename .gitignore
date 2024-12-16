@@ -23,6 +23,7 @@ Thumbs.db
 .idea/
 
 # Python virtual environment
+python/WPy64-31241/
 venv/
 __pycache__/
 *.pyc

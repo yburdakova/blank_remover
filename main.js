@@ -9,6 +9,20 @@ const store = new Store();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function getPythonPath() {
+  if (process.platform === 'win32') {
+    const winPythonPath = path.join(__dirname, 'WPy64-31241', 'python-3.12.4.amd64', 'python.exe');
+    if (fs.existsSync(winPythonPath)) {
+      return winPythonPath;
+    } else {
+      console.warn('WinPython not found. Falling back to system Python.');
+      return 'python';
+    }
+  } else {
+    return 'python3';
+  }
+}
+
 let mainWindow;
 
 function createMainWindow() {
@@ -53,7 +67,11 @@ ipcMain.handle('set-folder-path', (event, newPath) => {
 
 ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
   return new Promise((resolve, reject) => {
-    const pythonProcess = spawn('python3', [path.join(__dirname, 'remove_blank_pages.py'), folderPath]);
+
+    const pythonPath = getPythonPath();
+    console.log(`Using Python at: ${pythonPath}`);
+
+    const pythonProcess = spawn(pythonPath, [path.join(__dirname, 'remove_blank_pages.py'), folderPath]);
 
     pythonProcess.stdout.on('data', (data) => {
       console.log(`Python Output: ${data}`);
