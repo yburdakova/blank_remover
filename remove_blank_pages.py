@@ -18,7 +18,7 @@ def remove_blank_pages(folder_path):
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
 
-        if os.path.isfile(file_path) and file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp')):
+        if os.path.isfile(file_path) and file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.tif','.bmp')):
             if is_blank_page(file_path):
                 print(f"Removing blank page: {file_path}")
                 os.remove(file_path)

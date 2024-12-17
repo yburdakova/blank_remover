@@ -3,15 +3,26 @@ node_modules/
 
 # Ignore build files
 dist/
+release-build/
+*.zip
+*.exe
+*.dll
+*.pak
+*.dat
+*.bin
+*.log
 
 # Ignore logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+app.log
 
 # Ignore system files
 .DS_Store
 Thumbs.db
+*.tmp
+*.lock
 
 # Ignore environment variables
 .env
@@ -21,6 +32,7 @@ Thumbs.db
 # Ignore IDE specific files
 .vscode/
 .idea/
+*.iml
 
 # Python virtual environment
 python/WPy64-31241/
@@ -29,3 +41,19 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.whl
+
+# Ignore Mac OS specific files
+._*
+.AppleDouble
+.LSOverride
+
+# Ignore Electron build files
+blank-remover Helper*.app/
+blank-remover Helper*.exe/
+blank-remover Helper*.dll/
+blank-remover Helper*.log
+blank-remover Helper*.pak
+snapshot_blob.bin
+v8_context_snapshot.bin
+version
