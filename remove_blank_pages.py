@@ -1,24 +1,29 @@
 import os
-import cv2
-import numpy as np
+from PIL import Image, ImageChops
 import sys
 
 def is_blank_page(image_path, threshold=0.98):
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    if image is None:
-        print(f"Error reading file: {image_path}")
+    try:
+        image = Image.open(image_path).convert('L')
+
+        bbox = ImageChops.invert(image).getbbox()
+
+        if not bbox:
+            return True
+
+        white_pixels = sum(1 for pixel in image.getdata() if pixel > 245)
+        total_pixels = image.width * image.height
+        blank_ratio = white_pixels / total_pixels
+        return blank_ratio > threshold
+    except Exception as e:
+        print(f"Error processing file {image_path}: {e}")
         return False
-
-    _, binary = cv2.threshold(image, 250, 255, cv2.THRESH_BINARY)
-    blank_ratio = np.sum(binary == 255) / binary.size
-
-    return blank_ratio > threshold
 
 def remove_blank_pages(folder_path):
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
 
-        if os.path.isfile(file_path) and file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.tif','.bmp')):
+        if os.path.isfile(file_path) and file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.tif', '.bmp')):
             if is_blank_page(file_path):
                 print(f"Removing blank page: {file_path}")
                 os.remove(file_path)
