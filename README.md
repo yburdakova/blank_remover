@@ -52,7 +52,7 @@ Blank Remover is a desktop application designed to simplify and automate the pro
 
 1. **Clone this repository**:
   ```bash
-   git clone https://github.com/yburdakova/ccs-blank-remover.git
+   git clone https://github.com/yburdakova/blank-remover.git
    cd ccs-blank-remover
    ```
 
