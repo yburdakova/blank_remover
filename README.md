@@ -53,7 +53,7 @@ Blank Remover is a desktop application designed to simplify and automate the pro
 1. **Clone this repository**:
   ```bash
    git clone https://github.com/yburdakova/blank-remover.git
-   cd ccs-blank-remover
+   cd blank-remover
    ```
 
 2. **Install project dependencies**:
@@ -105,4 +105,4 @@ This approach avoids the need to install Python system-wide on the target machin
 - **Name**: Yana Burdakova
 - **Email**: burdakovacom@gmail.com
 - **Portfolio**: https://burdakova.com
-- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/yana-burdakova/)
+- **LinkedIn**: [Yana Burdakova LinkedIn Profile](https://www.linkedin.com/in/yana-burdakova/)
