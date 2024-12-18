@@ -99,7 +99,7 @@ function createMainWindow() {
   });
 
   mainWindow.loadFile('index.html');
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     console.log("Main window closed.");

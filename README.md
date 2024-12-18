@@ -100,10 +100,9 @@ Version: Python 3.12.4 (WinPython)
 Folder Path: Place the portable Python in resources\app\
 This approach avoids the need to install Python system-wide on the target machine.
 
-# Author
+# Developer
 
-- **Author Name**: Yana Burdakova
+- **Name**: Yana Burdakova
 - **Email**: burdakovacom@gmail.com
 - **Portfolio**: https://burdakova.com
-- **GitHub**: [Your GitHub Profile](https://github.com/yburdakova)
 - **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/yana-burdakova/)
