@@ -33,4 +33,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return 'Error removing blank pages.';
     }
   },
+
+  onShowLoader: (callback) => ipcRenderer.on('show-loader', callback),
+  onHideLoader: (callback) => ipcRenderer.on('hide-loader', callback),
 });

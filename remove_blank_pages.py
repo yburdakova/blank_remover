@@ -1,66 +1,43 @@
 import os
-from PIL import Image
+import shutil
 import sys
 
-def is_punch_hole_line(image, edge='left', threshold=20, hole_min_size=10, spacing_tolerance=5):
+def create_blank_page_folder(parent_folder, target_folder_name):
     """
-    Detects a line of punch holes along the left or right edge of the image.
+    Creates a folder '_BP_<target-folder>' to store blank pages.
     """
-    width, height = image.size
-    region = None
+    new_folder_name = f"_BP_{target_folder_name}"
+    new_folder_path = os.path.join(parent_folder, new_folder_name)
+    if not os.path.exists(new_folder_path):
+        os.makedirs(new_folder_path)
+    return new_folder_path
 
-    # Define regions for left or right edge
-    if edge == 'left':
-        region = (0, 0, 50, height)  # Left 50 pixels
-    elif edge == 'right':
-        region = (width - 50, 0, width, height)  # Right 50 pixels
-
-    cropped = image.crop(region).convert('L')
-    black_pixels = []
-
-    # Detect black pixels along the edge
-    for y in range(cropped.height):
-        row = cropped.getpixel((25, y))  # Middle of the cropped edge region
-        if row < threshold:  # Black pixel
-            black_pixels.append(y)
-
-    # Check for evenly spaced holes
-    if len(black_pixels) < 3:  # Not enough points for a line
-        return False
-
-    # Calculate distances between black pixels
-    distances = [black_pixels[i + 1] - black_pixels[i] for i in range(len(black_pixels) - 1)]
-    average_spacing = sum(distances) / len(distances)
-
-    # Verify spacing consistency
-    for dist in distances:
-        if abs(dist - average_spacing) > spacing_tolerance:
-            return False
-
-    return True
-
-def remove_blank_pages(folder_path):
+def move_blank_pages_by_size(folder_path, size_threshold_kb=160):
     """
-    Removes blank pages based on file size and punch hole detection (single holes and edge lines).
+    Moves files smaller than the specified size threshold (in KB) to a new folder.
     """
+    blank_pages = []
+    parent_folder, target_folder_name = os.path.split(folder_path)
+
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
 
-        # Check file size first
-        if os.path.isfile(file_path) and os.path.getsize(file_path) < 150 * 1024:  # Less than 150 KB
-            print(f"Removing small file (potentially blank): {file_path}")
-            os.remove(file_path)
-            continue
+        # Check file size
+        if os.path.isfile(file_path):
+            file_size_kb = os.path.getsize(file_path) / 1024  # Convert to KB
+            if file_size_kb < size_threshold_kb:
+                print(f"Detected small file ({file_size_kb:.2f} KB): {file_path}")
+                blank_pages.append(file_path)
 
-        # Check for punch hole lines and single holes
-        if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.tif', '.bmp')):
-            try:
-                with Image.open(file_path) as img:
-                    if is_punch_hole_line(img, edge='left') or is_punch_hole_line(img, edge='right'):
-                        print(f"Removing file with punch hole line: {file_path}")
-                        os.remove(file_path)
-            except Exception as e:
-                print(f"Error processing file {file_path}: {e}")
+    # Move blank pages to the new folder
+    if blank_pages:
+        destination_folder = create_blank_page_folder(parent_folder, target_folder_name)
+        for blank_file in blank_pages:
+            shutil.move(blank_file, os.path.join(destination_folder, os.path.basename(blank_file)))
+            print(f"Moved blank page to: {destination_folder}")
+        print(f"Blank pages moved to: {destination_folder}")
+    else:
+        print("No blank pages found.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -72,5 +49,5 @@ if __name__ == "__main__":
         print(f"Folder does not exist: {folder_path}")
         sys.exit(1)
 
-    remove_blank_pages(folder_path)
-    print("Blank pages removed successfully.")
+    move_blank_pages_by_size(folder_path)
+    print("Blank page processing complete.")

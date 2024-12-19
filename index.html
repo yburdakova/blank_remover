@@ -22,6 +22,13 @@
 
   <button id="removePages" class="hidden">Remove Blank Pages</button>
 
+  <div id="loader" class="hidden">
+    <div class="spinnerbox">
+      <div class="spinner"></div>
+      <div class="message">Analyzing and moving blank pages...</div>
+    </div>
+  </div>
+
   <script>
     const editButton = document.getElementById('editPath');
     const saveButton = document.getElementById('savePath');
@@ -29,6 +36,15 @@
     const folderButton = document.getElementById('selectFolder');
     const folderDisplay = document.getElementById('selectedFolder');
     const removeButton = document.getElementById('removePages');
+    const loader = document.getElementById('loader');
+
+    window.electronAPI.onShowLoader(() => {
+      loader.classList.remove('hidden');
+    });
+
+    window.electronAPI.onHideLoader(() => {
+      loader.classList.add('hidden');
+    });
 
     (async () => {
       try {

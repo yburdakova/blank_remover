@@ -144,6 +144,8 @@ ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
     const pythonPath = getPythonPath();
     const scriptPath = getScriptPath();
 
+    mainWindow.webContents.send('show-loader');
+
     console.log(`Python Path: "${pythonPath}"`);
     console.log(`Script Path: "${scriptPath}"`);
     console.log(`Folder Path: "${folderPath}"`);
@@ -170,6 +172,7 @@ ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
 
     pythonProcess.on('close', (code) => {
       console.log(`Python process exited with code ${code}`);
+      mainWindow.webContents.send('hide-loader');
       if (code === 0) {
         console.log("Blank pages removed successfully.");
         resolve('Blank pages removed successfully.');
@@ -181,6 +184,7 @@ ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
 
     pythonProcess.on('error', (err) => {
       console.error(`Failed to start Python process: ${err.message}`);
+      mainWindow.webContents.send('hide-loader');
       reject(`Failed to start Python process: ${err.message}`);
     });
   });
