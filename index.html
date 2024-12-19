@@ -28,9 +28,8 @@
     <button id="selectBox">Select</button>
   </div>
 
-  <p>Choose a folder to analyze:</p>
+  <p id="folderLabel">Choose a folder to analyze:</p>
   <button id="selectFolder">Select Folder</button>
-  <p id="selectedFolder">No folder selected</p>
 
   <button id="removePages" class="hidden">Remove Blank Pages</button>
 
@@ -46,7 +45,7 @@
     const saveProjectButton = document.getElementById('saveProject');
     const projectNameDisplay = document.getElementById('projectName');
     const folderButton = document.getElementById('selectFolder');
-    const folderDisplay = document.getElementById('selectedFolder');
+    const folderLabel = document.getElementById('folderLabel');
     const removeButton = document.getElementById('removePages');
     const loader = document.getElementById('loader');
     const selectBoxButton = document.getElementById('selectBox');
@@ -56,6 +55,7 @@
     let selectedProjectName = '';
     let selectedBoxPath = '';
     let selectedBoxName = '';
+    let analyzeFolderPath = '';
 
     window.electronAPI.onShowLoader(() => {
       loader.classList.remove('hidden');
@@ -138,27 +138,34 @@
 
       try {
         const folderPath = await window.electronAPI.selectFolder(selectedBoxPath);
-        folderDisplay.textContent = folderPath || 'No folder selected';
-
         if (folderPath) {
+          analyzeFolderPath = folderPath;
+          const folderName = extractFolderName(folderPath, 0);
+          folderLabel.innerHTML = `Folder to analyze: <strong>${folderName}</strong>`;
           removeButton.style.display = 'inline-block';
         } else {
+          analyzeFolderPath = '';
+          folderLabel.textContent = 'No folder selected';
           removeButton.style.display = 'none';
         }
       } catch (error) {
         console.error('Error selecting folder:', error);
+        analyzeFolderPath = '';
+        folderLabel.textContent = 'Error selecting folder';
+        removeButton.style.display = 'none';
       }
     });
 
+
+
     removeButton.addEventListener('click', async () => {
-      const folderPath = folderDisplay.textContent;
-      if (folderPath === 'No folder selected') {
+      if (!analyzeFolderPath) {
         alert('Please select a folder first.');
         return;
       }
 
       try {
-        const result = await window.electronAPI.removeBlankPages(folderPath);
+        const result = await window.electronAPI.removeBlankPages(analyzeFolderPath);
         alert(result);
       } catch (error) {
         alert(`Error: ${error}`);
