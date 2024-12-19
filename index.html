@@ -10,10 +10,10 @@
   <h1>Blank Remover</h1>
 
   <div class="path-container">
-    <label for="parentPath">Project Folder:</label>
-    <input type="text" id="parentPath" value="/default/path/to/scanned/files" disabled>
-    <button id="editPath">Select</button>
-    <button id="savePath" disabled>Save</button>
+    <div>Project Folder:</div>
+    <div id="projectName">Project Name</div>
+    <button id="selectProject">Select</button>
+    <button id="saveProject" disabled>Save</button>
   </div>
 
   <div class="path-container">
@@ -36,9 +36,9 @@
   </div>
 
   <script>
-    const editButton = document.getElementById('editPath');
-    const saveButton = document.getElementById('savePath');
-    const pathInput = document.getElementById('parentPath');
+    const selectProjectButton = document.getElementById('selectProject');
+    const saveProjectButton = document.getElementById('saveProject');
+    const projectNameDisplay = document.getElementById('projectName');
     const folderButton = document.getElementById('selectFolder');
     const folderDisplay = document.getElementById('selectedFolder');
     const removeButton = document.getElementById('removePages');
@@ -46,6 +46,8 @@
     const selectBoxButton = document.getElementById('selectBox');
     const currentBox = document.getElementById('currentBox');
 
+    let selectedProjectPath = '';
+    let selectedProjectName = '';
     let selectedBoxPath = '';
     let selectedBoxName = '';
 
@@ -60,33 +62,46 @@
     (async () => {
       try {
         const savedPath = await window.electronAPI.getFolderPath();
-        pathInput.value = savedPath;
+        projectNameDisplay.textContent = extractFolderName(savedPath, 1);;
+        selectedProjectPath = savedPath;
       } catch (error) {
         console.error('Error loading saved path:', error);
       }
     })();
 
-    editButton.addEventListener('click', () => {
-      pathInput.disabled = false;
-      saveButton.disabled = false;
-      editButton.disabled = true;
+    selectProjectButton.addEventListener('click', async () => {
+      try {
+        const projectFolderPath = await window.electronAPI.selectFolder();
+        if (projectFolderPath) {
+          selectedProjectPath = projectFolderPath;
+          const pathSegments = projectFolderPath.replace(/\\/g, '/').split('/');
+          const lastSegment = pathSegments.pop();
+          const secondLastSegment = pathSegments.pop();
+          selectedProjectName = extractFolderName(projectFolderPath, 1);
+          projectNameDisplay.textContent = selectedProjectName;
+          saveProjectButton.disabled = false;
+          console.log(`Selected project path: ${selectedProjectPath}`);
+          console.log(`Selected project name: ${selectedProjectName}`);
+        } else {
+          console.log('No folder selected.');
+        }
+      } catch (error) {
+        console.error('Error selecting project folder:', error);
+      }
     });
 
-    saveButton.addEventListener('click', async () => {
-      const newPath = pathInput.value;
+    saveProjectButton.addEventListener('click', async () => {
       try {
-        await window.electronAPI.setFolderPath(newPath);
-        console.log(`Saved path: ${newPath}`);
+        await window.electronAPI.setFolderPath(selectedProjectPath);
+        saveProjectButton.disabled = true;
+        console.log(`Saved project path: ${selectedProjectPath}`);
       } catch (error) {
-        console.error('Error saving path:', error);
+        console.error('Error saving project path:', error);
       }
-      pathInput.disabled = true;
-      saveButton.disabled = true;
-      editButton.disabled = false;
     });
 
     selectBoxButton.addEventListener('click', async () => {
-      const parentPath = pathInput.value;
+      const parentPath = selectedProjectPath;
       if (!parentPath) {
         alert('Please set the Project Folder Path first.');
         return;
@@ -96,7 +111,7 @@
         const boxFolderPath = await window.electronAPI.selectFolder(parentPath);
         if (boxFolderPath) {
           selectedBoxPath = boxFolderPath;
-          selectedBoxName = boxFolderPath.replace(/\\/g, '/').split('/').pop();
+          selectedBoxName = extractFolderName(boxFolderPath, 0);
           currentBox.textContent = selectedBoxName;
           console.log(`Selected box path: ${selectedBoxPath}`);
           console.log(`Selected box name: ${selectedBoxName}`);
@@ -143,6 +158,15 @@
         alert(`Error: ${error}`);
       }
     });
+
+    function extractFolderName(path, levels) {
+      const segments = path.replace(/\\/g, '/').split('/');
+      const nameParts = [];
+      for (let i = 0; i <= levels && segments.length; i++) {
+        nameParts.unshift(segments.pop());
+      }
+      return nameParts.join('\\');
+    }
   </script>
 </body>
 </html>
