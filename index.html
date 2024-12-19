@@ -10,10 +10,16 @@
   <h1>Blank Remover</h1>
 
   <div class="path-container">
-    <label for="parentPath">Parent Folder Path:</label>
+    <label for="parentPath">Project Folder:</label>
     <input type="text" id="parentPath" value="/default/path/to/scanned/files" disabled>
-    <button id="editPath">Edit</button>
+    <button id="editPath">Select</button>
     <button id="savePath" disabled>Save</button>
+  </div>
+
+  <div class="path-container">
+    <div>Box Folder:</div>
+    <div id="currentBox">Box Number</div>
+    <button id="selectBox">Select</button>
   </div>
 
   <p>Choose a folder to analyze:</p>
@@ -37,6 +43,11 @@
     const folderDisplay = document.getElementById('selectedFolder');
     const removeButton = document.getElementById('removePages');
     const loader = document.getElementById('loader');
+    const selectBoxButton = document.getElementById('selectBox');
+    const currentBox = document.getElementById('currentBox');
+
+    let selectedBoxPath = '';
+    let selectedBoxName = '';
 
     window.electronAPI.onShowLoader(() => {
       loader.classList.remove('hidden');
@@ -74,15 +85,47 @@
       editButton.disabled = false;
     });
 
-    folderButton.addEventListener('click', async () => {
+    selectBoxButton.addEventListener('click', async () => {
       const parentPath = pathInput.value;
-      const folderPath = await window.electronAPI.selectFolder(parentPath);
-      folderDisplay.textContent = folderPath || 'No folder selected';
+      if (!parentPath) {
+        alert('Please set the Project Folder Path first.');
+        return;
+      }
 
-      if (folderPath) {
-        removeButton.style.display = 'inline-block';
-      } else {
-        removeButton.style.display = 'none';
+      try {
+        const boxFolderPath = await window.electronAPI.selectFolder(parentPath);
+        if (boxFolderPath) {
+          selectedBoxPath = boxFolderPath;
+          selectedBoxName = boxFolderPath.replace(/\\/g, '/').split('/').pop();
+          currentBox.textContent = selectedBoxName;
+          console.log(`Selected box path: ${selectedBoxPath}`);
+          console.log(`Selected box name: ${selectedBoxName}`);
+        } else {
+          console.log('No folder selected.');
+        }
+      } catch (error) {
+        console.error('Error selecting box folder:', error);
+      }
+    });
+
+
+    folderButton.addEventListener('click', async () => {
+      if (!selectedBoxPath) {
+        alert('Please select a Box Folder first.');
+        return;
+      }
+
+      try {
+        const folderPath = await window.electronAPI.selectFolder(selectedBoxPath);
+        folderDisplay.textContent = folderPath || 'No folder selected';
+
+        if (folderPath) {
+          removeButton.style.display = 'inline-block';
+        } else {
+          removeButton.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error selecting folder:', error);
       }
     });
 

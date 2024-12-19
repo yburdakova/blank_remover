@@ -1,6 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-
 contextBridge.exposeInMainWorld('electronAPI', {
   selectFolder: async (parentPath) => {
     try {
