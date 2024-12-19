@@ -53,8 +53,9 @@ p {
 }
 
 button {
+  font-family: 'Poppins', sans-serif;
   color: #4a4a4a;
-  font-weight: bold;
+  font-weight: 500;
   padding: 0.7em 1.7em;
   font-size: 1rem;
   border-radius: 0.5em;
@@ -77,6 +78,8 @@ button:active {
 #removePages{
   margin-top: 30px;
   font-size: 22px;
+  color: #2c3e50;
+  font-weight: 700;
 }
 .path-container {
   display: flex;

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import Store from 'electron-store';
 import { spawn } from 'child_process';
 import fs from 'fs';
+import { session } from 'electron';
 
 const logFilePath = path.join(app.getPath('userData'), 'app.log');
 const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
@@ -92,7 +93,7 @@ function createMainWindow() {
   console.log("Creating main window...");
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 660,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -190,7 +191,18 @@ ipcMain.handle('remove-blank-pages', async (event, folderPath) => {
   });
 });
 
-app.on('ready', createMainWindow);
+app.on('ready', async () => {
+  const defaultSession = session.defaultSession;
+
+  try {
+    await defaultSession.clearCache();
+    console.log('Cache cleared successfully.');
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+  }
+
+  createMainWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

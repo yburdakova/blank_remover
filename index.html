@@ -23,7 +23,7 @@
   <div class="path-container">
     <div class="one-line-folder-name">
       <div class="title">Box Folder:</div>
-      <div id="currentBox">Select box folder...</div>
+      <div id="currentBox">Select box folder with your initials...</div>
     </div>
     <button id="selectBox">Select</button>
   </div>
@@ -113,14 +113,24 @@
         return;
       }
 
-      try {
+          try {
         const boxFolderPath = await window.electronAPI.selectFolder(parentPath);
+
         if (boxFolderPath) {
           selectedBoxPath = boxFolderPath;
-          selectedBoxName = extractFolderName(boxFolderPath, 0);
-          currentBox.textContent = selectedBoxName;
+
+          const pathSegments = boxFolderPath.replace(/\\/g, '/').split('/');
+          const boxName = pathSegments.find(segment => segment.startsWith('Box'));
+
+          if (boxName) {
+            currentBox.textContent = boxName;
+          } else {
+            selectedBoxName = pathSegments[pathSegments.length - 1];
+            currentBox.textContent = selectedBoxName;
+          }
+
           console.log(`Selected box path: ${selectedBoxPath}`);
-          console.log(`Selected box name: ${selectedBoxName}`);
+          console.log(`Displayed name: ${currentBox.textContent}`);
         } else {
           console.log('No folder selected.');
         }
